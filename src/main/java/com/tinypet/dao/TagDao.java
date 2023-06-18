@@ -1,0 +1,18 @@
+package com.tinypet.dao;
+
+import com.googlecode.objectify.ObjectifyService;
+import com.tinypet.model.Tag;
+
+public class TagDao {
+    public void save(Tag tag) {
+        ObjectifyService.ofy().save().entity(tag).now();
+    }
+
+    public Tag load(Long id) {
+        return ObjectifyService.ofy().load().type(Tag.class).id(id).now();
+    }
+
+    public void delete(Long id) {
+        ObjectifyService.ofy().delete().type(Tag.class).id(id).now();
+    }
+}
