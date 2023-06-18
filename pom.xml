@@ -28,6 +28,8 @@
     <archiveClasses>true</archiveClasses>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <appengine.sdk.version>2.0.12</appengine.sdk.version>
+
+    <endpoints.project.id>petition-cloud-miage</endpoints.project.id>
     <!-- [END_EXCLUDE] -->
   </properties>
   <!-- [END properties] -->
@@ -51,6 +53,20 @@
       <scope>provided</scope>
     </dependency>
     <!-- [END servlet] -->
+
+    <!-- Compile/runtime dependencies -->
+    <dependency>
+      <groupId>com.google.endpoints</groupId>
+      <artifactId>endpoints-framework</artifactId>
+      <version>2.2.1</version>
+    </dependency>
+    <!-- [START api_management] -->
+    <dependency>
+      <groupId>com.google.endpoints</groupId>
+      <artifactId>endpoints-management-control-appengine-all</artifactId>
+      <version>1.0.12</version>
+    </dependency>
+    <!-- [END api_management] -->
 
     <dependency>
       <groupId>jstl</groupId>
