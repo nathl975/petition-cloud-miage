@@ -1,0 +1,11 @@
+.badgeTag{
+    border: solid 1px;
+    border-radius: 30pt;
+    padding: 5px 7px 5px 7px;
+    margin-right: 5px;
+}
+.badgeTag:hover{
+    background-color : lightgrey;
+    border: solid 1px grey;
+    cursor:pointer;
+}
