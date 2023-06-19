@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
-@WebServlet("/petitions/*")
+@WebServlet(name = "PetitionServlet", urlPatterns = {"/petitions/*"})
 public class PetitionServlet extends HttpServlet {
     private final PetitionDao petitionDao = new PetitionDao();
     private final UserDao userDao = new UserDao();

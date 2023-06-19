@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/tags/*")
+@WebServlet(name = "TagServlet", urlPatterns = {"/tags/*"})
 public class TagServlet extends HttpServlet {
     private final TagDao tagDao = new TagDao();
     private final PetitionDao petitionDao = new PetitionDao();
