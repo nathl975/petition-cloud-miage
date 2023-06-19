@@ -70,7 +70,7 @@ public class UserDao {
         GoogleIdToken idToken = null;
 
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
-                .setAudience(Collections.singletonList(CLIENT_ID))
+                .setAudience(Collections.singletonList("545960234174-ji3pbb20h0g5hq9ui28a1u0oui4htcjv.apps.googleusercontent.com"))
                 .build();
 
         try {
