@@ -27,7 +27,6 @@ public class Petition {
         this.body = body;
         this.description = description;
         this.tags = tags;
-        this.date = new Date();
     }
 
     public Long getId() {

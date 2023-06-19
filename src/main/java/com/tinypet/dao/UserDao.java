@@ -72,23 +72,32 @@ public class UserDao {
     }
 
     public User validateCredential(String jwtToken) {
+
         String userId = getVerifiedIdFromCredential(jwtToken);
+
         if (userId == null) {
             return null;
         }
-
         return getUser(userId);
     }
 
     private String getVerifiedIdFromCredential(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken);
+
             return claims.getBody().getSubject();
         } catch (JwtException e) {
+            System.out.println(e +"Invalid JWT token");
             return null;
         }
     }
 
+    public static String createJwt(User user) {
+        return Jwts.builder()
+                .setSubject(user.getId())
+                .signWith(key)
+                .compact();
+    }
     public List<Signature> getSignaturesSortedByDate(String userId) {
         return ObjectifyService.ofy().load().type(Signature.class)
                 .filter("user =", userId).order("-date").list();

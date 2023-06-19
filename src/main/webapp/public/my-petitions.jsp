@@ -26,12 +26,18 @@
 <script type="module">
   var MyPetitions = {
     view: function() {
+      const jwtToken = localStorage.getItem("jwt");
       return m('div', {class:'container'}, [
         m('div',[
           m("div",m(Navbar)),
           m('form', {action: '/petition-create'}, [
-                  m('input.btn.btn-success', {type: 'submit', value:'Créer une pétition'})
-          ]),
+            m('input.btn.btn-success',
+                    {
+                      type: 'submit',
+                      value:'Créer une pétition',
+                      disabled: !jwtToken
+                    }
+            )          ]),
           m("div", m(PetitionList)),
         ])
       ])

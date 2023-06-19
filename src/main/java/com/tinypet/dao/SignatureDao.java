@@ -21,8 +21,18 @@ public class SignatureDao {
     }
 
     public com.googlecode.objectify.Key<Signature> createSignature(Signature signature) {
-        return ObjectifyService.ofy().save().entity(signature).now();
-    }
+        Signature existingSignature = ObjectifyService.ofy().load().type(Signature.class)
+                .filter("user", signature.getUser())
+                .filter("petition", signature.getPetition())
+                .first().now();
+
+        // If the user has already signed the petition, return the existing signature
+        if (existingSignature != null) {
+            return null;
+        }
+
+        // If the user hasn't signed the petition yet, save the new signature
+        return ObjectifyService.ofy().save().entity(signature).now();    }
 
     public List<Signature> getSignaturesByUser(String userId) {
         return ObjectifyService.ofy().load().type(Signature.class).filter("user", userId).list();

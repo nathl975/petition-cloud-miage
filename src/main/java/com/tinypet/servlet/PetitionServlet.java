@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tinypet.dao.PetitionDao;
 import com.tinypet.dao.UserDao;
 import com.tinypet.model.Petition;
+import com.tinypet.model.Signature;
 import com.tinypet.model.User;
 import com.googlecode.objectify.Key;
 
@@ -60,8 +61,25 @@ public class PetitionServlet extends HttpServlet {
     // POST /petitions
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String authHeader = req.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
+            return;
+        }
+
+        String token = authHeader.substring(7);
+        User user = userDao.validateCredential(token);
+
+        if (user == null) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You need to be logged in to create a petition");
+            return;
+        }
 
         Petition petitionFromReq = new Gson().fromJson(req.getReader(), Petition.class);
+
+        petitionFromReq.setOwner(user.getId());
+        petitionFromReq.setDate(new Date());
 
         com.googlecode.objectify.Key<Petition> createdPetition = petitionDao.createPetition(petitionFromReq);
 

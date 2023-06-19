@@ -20,7 +20,6 @@ import java.util.List;
 public class UserServlet extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final SignatureDao signatureDao = new SignatureDao();
-    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -34,12 +33,12 @@ public class UserServlet extends HttpServlet {
             message = "User has been created.";
             resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(new Gson().toJson(new UserResponse(createdUser, createJwt(createdUser), message)));
+            resp.getWriter().println(new Gson().toJson(new UserResponse(createdUser, UserDao.createJwt(createdUser), message)));
         } else {
             message = "User has logged in.";
              resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(new Gson().toJson(new UserResponse(existingUser, createJwt(existingUser), message)));
+            resp.getWriter().println(new Gson().toJson(new UserResponse(existingUser, UserDao.createJwt(existingUser), message)));
         }
     }
 
@@ -52,17 +51,13 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        String jwt = authHeader.substring(7); // Strip 'Bearer ' prefix
+        String token = authHeader.substring(7);
+        User user = userDao.validateCredential(token);
 
-        try {
-            Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-            String userId = jws.getBody().getSubject();
-            User user = userDao.getUser(userId);
-
-            if (user == null) {
-                resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT subject.");
-                return;
-            }
+        if (user == null) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You need to be logged in to create a petition");
+            return;
+        }
 
             String pathInfo = req.getPathInfo();
 
@@ -71,13 +66,11 @@ public class UserServlet extends HttpServlet {
                 handleUserInfoRequest(user, resp);
                 //  On check si on est /users/signatures
             } else if (pathInfo.equals("/signatures")) {
-                handleUserSignaturesRequest(userId, resp);
+                handleUserSignaturesRequest(user.getId(), resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL format.");
             }
-        } catch (JwtException e) {
-            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT.");
-        }
+
     }
 
     private void handleUserInfoRequest(User user, HttpServletResponse resp) throws IOException {
@@ -89,12 +82,7 @@ public class UserServlet extends HttpServlet {
         resp.getWriter().println(new Gson().toJson(signatures));
     }
 
-    private String createJwt(User user) {
-        return Jwts.builder()
-                .setSubject(user.getId())
-                .signWith(key)
-                .compact();
-    }
+
 
     public static class UserResponse {
         public final User user;

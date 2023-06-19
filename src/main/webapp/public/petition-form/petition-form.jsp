@@ -14,33 +14,39 @@
     </head>
     <body>
     <script>
-        
+
         var Petition={
             Title : "",
             Content : "",
             Tags : [],
 
             load: function() {
-                
+
             },
             save: function() {
-                fetch('/users', {
+                var jwtToken = localStorage.getItem('jwt'); // Replace 'jwt-token' with the key you use to store the token
+                fetch('/petitions', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + jwtToken
                     },
                     body: JSON.stringify({
                         "body": Petition.Content,
                         "description": Petition.Title,
-                        "tags": Petition.Tags,
-                        "date": Date.now(),
+                        "tags": Petition.Tags.map(String),
                     }),
                 })
-                .then(response => response.json())
-                .then(data => console.log('User data sent to backend: ', data))
-                .catch((error) => {
-                    console.error('Error:', error);
-                }); 
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Not authenticated');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
             },
             toggleTag: function(tagId) {
                 var index = Petition.Tags.indexOf(tagId);
@@ -53,7 +59,7 @@
             isTagSelected: function(tagId) {
                 return Petition.Tags.indexOf(tagId) !== -1;
             }
-        }  
+        }
         var Tags = {
             list: [],
             loadList: function() {
@@ -81,13 +87,18 @@
             view: function() {
                 return m(".container", [
                     m("h2", "Formulaire d'édition de pétition"),
-                    m("form", [
+                    m("form", {
+                        onsubmit: function(event) {
+                            event.preventDefault(); // Empêche le comportement par défaut du formulaire
+                            Petition.save(); // Enregistre la pétition
+                        }
+                    }, [
                         m(".form-group", [
                             m("label", { for: "titre" }, "Titre de la pétition:"),
-                            m("input.form-control", { type: "text", id: "titre", name: "titre", required: true, 
+                            m("input.form-control", { type: "text", id: "titre", name: "titre", required: true,
                             oninput: function(event) {
                                 Petition.Title = event.target.value; // Met à jour la valeur de Petition.Title
-                            } 
+                            }
                         })
                         ]),
                         m(".form-group", [
@@ -116,6 +127,6 @@
         };
 
 m.mount(document.body, PetitionView);
-</script>  
+</script>
 </body>
 </html>
