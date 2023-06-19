@@ -56,8 +56,8 @@ function handleSignOut() {
 var Navbar = {
     view: function() {
         const userName = localStorage.getItem('userName');
-        return m("nav.navbar.navbar-expand-lg.navbar-light.bg-light", [
-            m('a.navbar-brand', { href: '#' }, 'Pétitions'),
+        return m("nav.navbar.navbar-expand-lg.navbar-dark.bg-dark", [
+            m('a.navbar-brand', { href: '/' }, 'Accueil'),
             m('button.navbar-toggler', {
                 type: 'button',
                 'data-toggle': 'collapse',
@@ -68,10 +68,21 @@ var Navbar = {
             }, [
                 m('span.navbar-toggler-icon')
             ]),
-            m('div.collapse.navbar-collapse.justify-content-end', { id: 'loadButton' }, [
-                userName ? m('div', 'Bonjour, ' + userName, [
-                    m('button.btn.btn-outline-secondary', { onclick: handleSignOut }, 'Déconnexion')
-                ]) : m('div', { id: 'google-signin-button' })
+            m('div.collapse.navbar-collapse', {id: 'navbarSupportedContent'}, [
+                m('ul.navbar-nav.mr-auto', [
+                    m('li.nav-item', [
+                        m('a.navbar-brand', { href: '/my-petitions' }, 'Mes pétitions'),
+                    ]),
+                ]),
+                m('div.collapse.navbar-collapse.justify-content-end', { id: 'loadButton' }, [
+                    userName ? [
+                        m('span.navbar-text', {style: 'margin-right: 10px;'}, [
+                            'Bonjour, ' + userName
+                        ]),
+                        m('button.btn.btn-outline-danger', { onclick: handleSignOut }, 'Déconnexion')
+                        ]
+                    : m('div', { id: 'google-signin-button' })
+                ]),
             ]),
         ])
     }

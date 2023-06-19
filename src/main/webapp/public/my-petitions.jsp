@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="org.example.HelloAppEngine" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -19,22 +18,26 @@
   <script src="../assets/navbar.js"></script>
   <script src="../assets/petitionList.js"></script>
 
-  <title>Pétitions</title>
+
+  <title>Mes pétitions</title>
 </head>
 <body>
 
 <script type="module">
-  var HomePage = {
+  var MyPetitions = {
     view: function() {
       return m('div', {class:'container'}, [
         m('div',[
           m("div",m(Navbar)),
-          m("div",m(PetitionList)),
+          m('form', {action: '/petition-create'}, [
+                  m('input.btn.btn-success', {type: 'submit', value:'Créer une pétition'})
+          ]),
+          m("div", m(PetitionList)),
         ])
       ])
     }
   }
-  m.mount(document.body, HomePage)
+  m.mount(document.body, MyPetitions)
 </script>
 </body>
 </html>

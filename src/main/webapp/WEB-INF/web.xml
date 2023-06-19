@@ -45,8 +45,28 @@
         <url-pattern>/petitions/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>my-petitions</servlet-name>
+        <jsp-file>/public/my-petitions.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>my-petitions</servlet-name>
+        <url-pattern>/my-petitions</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>petitions-create</servlet-name>
+        <jsp-file>/public/petition-form/petition-form.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>petitions-create</servlet-name>
+        <url-pattern>/petition-create</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
-        <welcome-file>public/index.html</welcome-file>
+        <welcome-file>public/index.jsp</welcome-file>
     </welcome-file-list>
 
     <filter>
