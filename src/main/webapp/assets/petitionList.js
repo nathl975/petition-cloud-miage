@@ -3,7 +3,7 @@ var Petitions = {
     loadList: function() {
         return m.request({
             method: "GET",
-            url: "/petitions/"
+            url: "/petitions"
         })
         .then(function(result) {
             Petitions.list = result

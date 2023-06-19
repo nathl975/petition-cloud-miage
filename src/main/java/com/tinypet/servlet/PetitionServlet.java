@@ -26,6 +26,10 @@ public class PetitionServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
+        if(pathInfo == null) {
+            super.service(req, resp);
+            return;
+        }
         String[] pathParts = pathInfo.split("/");
         if (pathParts.length > 2 && "signatures".equals(pathParts[2])) {
             // Delegate to SignatureServlet
@@ -36,13 +40,21 @@ public class PetitionServlet extends HttpServlet {
     }
 
     // GET /petitions/{petitionId}
+    // GET /petitions
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
-        Long id = Long.parseLong(pathInfo.substring(1)); // Excludes the initial "/"
-        Petition petition = petitionDao.getPetition(id);
-        resp.setContentType("application/json");
-        resp.getWriter().println(new Gson().toJson(petition));
+        if (pathInfo == null || pathInfo.equals("/")) {
+            // GET /petitions
+            resp.setContentType("application/json");
+            resp.getWriter().println(new Gson().toJson(petitionDao.getTop100Petitions()));
+            return;
+        }else {
+            Long id = Long.parseLong(pathInfo.substring(1)); // Excludes the initial "/"
+            Petition petition = petitionDao.getPetition(id);
+            resp.setContentType("application/json");
+            resp.getWriter().println(new Gson().toJson(petition));
+        }
     }
 
     // POST /petitions
