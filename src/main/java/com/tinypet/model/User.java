@@ -10,24 +10,23 @@ import java.util.Set;
 @Entity
 public class User {
     @Id
-    Long id;
+    String userId;
     @Index
     String name;
     Set<Long> signedPetitions = new HashSet<>();
 
     protected User() {}
-    public User(Long id, String name, Set<Long> signedPetitions) {
-        this.id = id;
+    public User(String userId, String name) {
+        this.userId = userId;
         this.name = name;
-        this.signedPetitions = signedPetitions;
     }
 
-    public Long getId() {
-        return id;
+    public String getId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(String id) {
+        this.userId = id;
     }
 
     public String getName() {

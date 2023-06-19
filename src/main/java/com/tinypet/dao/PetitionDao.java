@@ -22,4 +22,18 @@ public class PetitionDao {
         return ObjectifyService.ofy().load().type(Petition.class)
                 .order("-date").limit(100).list();
     }
+
+    public Petition getPetition(Long id) {
+        return ObjectifyService.ofy().load().type(Petition.class).id(id).now();
+    }
+
+    public com.googlecode.objectify.Key<Petition> createPetition(Petition petition) {
+        return ObjectifyService.ofy().save().entity(petition).now();
+    }
+
+    public List<Petition> getPetitionsByTag(String tagId) {
+        return ObjectifyService.ofy().load().type(Petition.class).filter("tags", tagId).list();
+    }
+
+
 }

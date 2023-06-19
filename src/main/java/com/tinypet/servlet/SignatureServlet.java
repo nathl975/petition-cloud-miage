@@ -1,54 +1,54 @@
 package com.tinypet.servlet;
 
-import java.io.IOException;
-
-import com.google.gson.Gson;
+import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.cloud.datastore.Key;
 import com.tinypet.dao.PetitionDao;
+import com.tinypet.dao.SignatureDao;
 import com.tinypet.dao.UserDao;
 import com.tinypet.model.Petition;
+import com.tinypet.model.Signature;
 import com.tinypet.model.User;
-import com.googlecode.objectify.Key;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
+import java.util.List;
 
-@WebServlet("/petitions/*")
-public class PetitionServlet extends HttpServlet {
-    private final PetitionDao petitionDao = new PetitionDao();
+@WebServlet("/petitions/*/signatures")
+public class SignatureServlet extends HttpServlet {
+
+    private final SignatureDao signatureDao = new SignatureDao();
     private final UserDao userDao = new UserDao();
 
-    // GET /petitions/{petitionId}
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
-        Long id = Long.parseLong(pathInfo.substring(1)); // Excludes the initial "/"
-        Petition petition = petitionDao.getPetition(id);
-        resp.setContentType("application/json");
-        resp.getWriter().println(new Gson().toJson(petition));
-    }
+        Long petitionId = Long.parseLong(pathInfo.substring(1));
 
-    // POST /petitions
+        List<Signature> signatures = signatureDao.getSignaturesByPetition(petitionId);
+
+        resp.setContentType("application/json");
+        resp.getWriter().println(new Gson().toJson(signatures));
+    }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pathInfo = req.getPathInfo();
+        Long petitionId = Long.parseLong(pathInfo.substring(1));
+
+        // Authentification
         User user = userDao.validateIdToken(req);
         if (user == null) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid ID token.");
             return;
         }
-        Petition petitionFromReq = new Gson().fromJson(req.getReader(), Petition.class);
 
-        // Set the owner ID to the Google user ID
-        petitionFromReq.setOwner(user.getId().toString());
+        Signature signature = new Signature(null, user.getId().toString(), petitionId);
+        com.googlecode.objectify.Key<Signature> key = signatureDao.createSignature(signature);
 
-        com.googlecode.objectify.Key<Petition> createdPetition = petitionDao.createPetition(petitionFromReq);
-
-        // Return the created petition
         resp.setContentType("application/json");
-        resp.getWriter().println(new Gson().toJson(createdPetition));
+        resp.getWriter().println(new Gson().toJson(key));
     }
 
 }

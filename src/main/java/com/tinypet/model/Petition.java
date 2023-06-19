@@ -50,6 +50,9 @@ public class Petition {
         return date;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
     public String getBody() {
         return body;
     }
@@ -73,4 +76,6 @@ public class Petition {
     public void setTags(Set<Long> tags) {
         this.tags = tags;
     }
+
+
 }
