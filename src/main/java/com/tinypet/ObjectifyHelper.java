@@ -27,7 +27,7 @@ public class ObjectifyHelper implements ServletContextListener {
         ObjectifyService.register(Signature.class);
 
         //Création tag
-        List<String> initialTags = Arrays.asList("Environment", "Justice", "Politics"); // List of initial tags
+        List<String> initialTags = Arrays.asList("Justice", "Environnement", "Santé", "Éducation", "Politique", "Animaux", "Handicap", "Technologie","Autre","Économie");
 
         ObjectifyService.run(new VoidWork() {
             public void vrun() {
