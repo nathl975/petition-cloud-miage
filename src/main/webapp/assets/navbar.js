@@ -1,4 +1,3 @@
-// Asynchronously load the Google Platform library
 function loadButton() {
     var script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
@@ -18,17 +17,10 @@ function loadButton() {
     document.body.appendChild(script);
 }
 
-function handleSignOut() {
-    localStorage.removeItem('userName');
-
-    location.reload();
-}
 
 function handleCredentialResponse(response) {
     var credential = response.credential;
     const responsePayload = jwt_decode(credential);
-
-    localStorage.setItem('userName', responsePayload.name);
 
     // Send a POST request to the backend with user data
     fetch('/users', {
@@ -42,21 +34,30 @@ function handleCredentialResponse(response) {
         }),
     })
         .then(response => response.json())
-        .then(data => console.log('User data sent to backend: ', data))
+        .then(data => {
+            // Update JWT and user info
+            localStorage.setItem('jwt', data.jwt);
+            localStorage.setItem('userName', data.user.name);
+        })
         .catch((error) => {
             console.error('Error:', error);
         });
-    location.reload();
 
+    m.redraw();
 }
+
+function handleSignOut() {
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('userName');
+    location.reload();
+}
+
 
 var Navbar = {
     view: function() {
         const userName = localStorage.getItem('userName');
-        const userId = localStorage.getItem('userId');
-
-        return m("nav.navbar.navbar-expand-lg.navbar-dark.bg-dark", [
-            m('a.navbar-brand', { href: '/' }, 'Pétitions'),
+        return m("nav.navbar.navbar-expand-lg.navbar-light.bg-light", [
+            m('a.navbar-brand', { href: '#' }, 'Pétitions'),
             m('button.navbar-toggler', {
                 type: 'button',
                 'data-toggle': 'collapse',
@@ -67,22 +68,10 @@ var Navbar = {
             }, [
                 m('span.navbar-toggler-icon')
             ]),
-            // <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            m('div.collapse.navbar-collapse', {id: 'navbarSupportedContent'}, [
-                // <ul className="navbar-nav mr-auto">
-                m('ul.navbar-nav.mr-auto', [
-                    // <li className="nav-item">
-                    //     <a className="nav-link" href="#">Link</a>
-                    // </li>
-                    m('li.nav-item', [
-                        m('a.navbar-brand', { href: '/' }, 'Mes pétitions'),
-                    ]),
-                ]),
-                m('div.collapse.navbar-collapse.justify-content-end', { id: 'loadButton' }, [
-                    userName ? m('div', 'Bonjour, ' + userName, [
-                        m('button.btn.btn-outline-danger', { onclick: handleSignOut }, 'Déconnexion')
-                    ]) : m('div', { id: 'google-signin-button' })
-                ]),
+            m('div.collapse.navbar-collapse.justify-content-end', { id: 'loadButton' }, [
+                userName ? m('div', 'Bonjour, ' + userName, [
+                    m('button.btn.btn-outline-secondary', { onclick: handleSignOut }, 'Déconnexion')
+                ]) : m('div', { id: 'google-signin-button' })
             ]),
         ])
     }

@@ -48,11 +48,7 @@ public class PetitionServlet extends HttpServlet {
     // POST /petitions
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        User user = userDao.validateIdToken(req);
-        if (user == null) {
-            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid ID token.");
-            return;
-        }
+
         Petition petitionFromReq = new Gson().fromJson(req.getReader(), Petition.class);
 
         com.googlecode.objectify.Key<Petition> createdPetition = petitionDao.createPetition(petitionFromReq);

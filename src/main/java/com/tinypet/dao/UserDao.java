@@ -8,6 +8,8 @@ import com.google.cloud.datastore.*;
 import com.googlecode.objectify.ObjectifyService;
 import com.tinypet.model.Signature;
 import com.tinypet.model.User;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -17,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class UserDao {
-    private static final String CLIENT_ID = "545960234174-ji3pbb20h0g5hq9ui28a1u0oui4htcjv.apps.googleusercontent.com";
+    private static final java.security.Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public void save(User user) {
         ObjectifyService.ofy().save().entity(user).now();
@@ -65,37 +67,27 @@ public class UserDao {
     }
 
 
-    public User validateIdToken(HttpServletRequest req) throws IOException {
-        String idTokenString = req.getHeader("Authorization").substring("Bearer ".length());
-        GoogleIdToken idToken = null;
-
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
-                .setAudience(Collections.singletonList("347549281772-7ueqjbqnfmd2m05vdsb50p87lua8o6i0.apps.googleusercontent.com"))
-                .build();
-
-        try {
-            idToken = verifier.verify(idTokenString);
-        } catch (GeneralSecurityException | IOException e) {
-            throw new IOException("Failed to verify token", e);
-        }
-        if (idToken != null) {
-            GoogleIdToken.Payload payload = idToken.getPayload();
-            String userId = payload.getSubject();
-            String email = payload.getEmail();
-            User user = getUserById(userId);
-            if (user == null) {
-                user = createUser(new User(userId, email));
-            }
-            return user;
-        }
-        return null;
-    }
-
-
     public User getUserById(String userId) {
         return ObjectifyService.ofy().load().type(User.class).id(userId).now();
     }
 
+    public User validateCredential(String jwtToken) {
+        String userId = getVerifiedIdFromCredential(jwtToken);
+        if (userId == null) {
+            return null;
+        }
+
+        return getUser(userId);
+    }
+
+    private String getVerifiedIdFromCredential(String jwtToken) {
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken);
+            return claims.getBody().getSubject();
+        } catch (JwtException e) {
+            return null;
+        }
+    }
 
     public List<Signature> getSignaturesSortedByDate(String userId) {
         return ObjectifyService.ofy().load().type(Signature.class)

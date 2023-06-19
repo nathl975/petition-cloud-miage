@@ -40,7 +40,8 @@ public class SignatureServlet extends HttpServlet {
         Long petitionId = Long.parseLong(pathInfo.substring(1));
 
         // Authentification
-        User user = userDao.validateIdToken(req);
+        String credential = new Gson().fromJson(req.getReader(), String.class);
+        User user = userDao.validateCredential(credential);
         if (user == null) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid ID token.");
             return;
