@@ -100,8 +100,8 @@ var PetitionList = {
                     }))
                 ]),
             ]),
-            
-            testPetitions.filter(function(petition) {
+
+            Petitions.list.filter(function(petition) { // Remplacer testPetitions par Petitions.list
                 if (PetitionList.filterOption === "mostSigned") {
                     return petition.nbSignatures > 0;
                 } else if (PetitionList.filterOption === "mostRecent") {
@@ -116,7 +116,7 @@ var PetitionList = {
                     m("p.card-body", petition.body),
                     m(".container", { style: "display: flex; justify-content: space-between; margin-bottom: 5px" }, [
                         m("div", "Publié par " + petition.owner + " le " + petition.date),
-                        m("div", "Nombre de signatures: " + petition.nbSignatures),
+                        m("div", "Nombre de signatures: " + 0),
                     ]),
                 ]);
             })
