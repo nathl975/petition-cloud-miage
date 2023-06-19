@@ -79,9 +79,13 @@ var Navbar = {
                     ]),
                 ]),
                 m('div.collapse.navbar-collapse.justify-content-end', { id: 'loadButton' }, [
-                    userName ? m('div', 'Bonjour, ' + userName, [
+                    userName ? [
+                        m('span.navbar-text', {style: 'margin-right: 10px;'}, [
+                            'Bonjour, ' + userName
+                        ]),
                         m('button.btn.btn-outline-danger', { onclick: handleSignOut }, 'Déconnexion')
-                    ]) : m('div', { id: 'google-signin-button' })
+                        ]
+                    : m('div', { id: 'google-signin-button' })
                 ]),
             ]),
         ])
