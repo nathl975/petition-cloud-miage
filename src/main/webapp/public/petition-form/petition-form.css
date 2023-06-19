@@ -9,3 +9,11 @@
     border: solid 1px grey;
     cursor:pointer;
 }
+.selected{
+    border: solid 1px;
+    border-radius: 30pt;
+    padding: 5px 7px 5px 7px;
+    margin-right: 5px;
+    background-color: lightblue;
+    border-color: cornflowerblue;
+}
