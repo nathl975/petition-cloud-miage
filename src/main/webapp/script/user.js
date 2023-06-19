@@ -7,7 +7,7 @@ function loadButton() {
     script.onload = function() {
         // Initialize Google One Tap after the library has loaded
         google.accounts.id.initialize({
-            client_id: "347549281772-ud7a93hp8e5s72iaktcop31186o62m76.apps.googleusercontent.com",
+            client_id: "347549281772-7ueqjbqnfmd2m05vdsb50p87lua8o6i0.apps.googleusercontent.com",
             callback: handleCredentialResponse
         });
         google.accounts.id.renderButton(
