@@ -14,13 +14,20 @@
     </head>
     <body>
     <script>
-        var tags = ["Justice", "Environnement", "Politique"]; // Tableau des tags
+            var tags = [];
 
-        var PetitionForm = {
-    view: function() {
-        return m(".container", [
-        m("h2", "Formulaire d'édition de pétition"),
-        m("form", [
+            fetch('/tags/')
+            .then(response => response.json())
+            .then(data => {
+            tags = data;
+            m.mount(document.body, PetitionForm);
+        });
+
+            var PetitionForm = {
+            view: function() {
+            return m(".container", [
+            m("h2", "Formulaire d'édition de pétition"),
+            m("form", [
             m(".form-group", [
             m("label", { for: "titre" }, "Titre de la pétition:"),
             m("input.form-control", { type: "text", id: "titre", name: "titre", required: true })
@@ -28,20 +35,18 @@
             m(".form-group", [
             m("label", { for: "tags" }, "Tags associés:"),
             m("div", { style: "display: flex;" }, tags.map(function(tag) {
-                return m(".badgeTag", tag);
-            }))
+            return m(".badgeTag", tag.tagName);
+        }))
             ]),
             m(".form-group", [
             m("label", { for: "contenu" }, "Contenu de la pétition:"),
             m("textarea.form-control", { id: "contenu", name: "contenu", rows: 8, required: true })
             ]),
             m("button.btn.btn-primary", { type: "submit" }, "Soumettre")
-        ])
-        ]);
-    }
-    };
-
-m.mount(document.body, PetitionForm);
-</script>  
+            ])
+            ]);
+        }
+        };
+    </script>
 </body>
 </html>

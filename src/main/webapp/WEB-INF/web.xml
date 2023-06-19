@@ -48,4 +48,13 @@
     <welcome-file-list>
         <welcome-file>./petition-form/petition-form.jsp</welcome-file>
     </welcome-file-list>
+
+    <filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>

@@ -25,5 +25,8 @@ public class TagDao {
     public List<Tag> getAllTags() {
         return ObjectifyService.ofy().load().type(Tag.class).list();
     }
+    public Tag getTagByName(String tagName) {
+        return ObjectifyService.ofy().load().type(Tag.class).filter("tagName", tagName).first().now();
+    }
 
 }
