@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "SignatureServlet", urlPatterns = {"/petitions/*/signatures"})
 public class SignatureServlet extends HttpServlet {
 
     private final SignatureDao signatureDao = new SignatureDao();

@@ -9,6 +9,7 @@ import com.tinypet.model.Petition;
 import com.tinypet.model.User;
 import com.googlecode.objectify.Key;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,19 @@ import java.util.Date;
 public class PetitionServlet extends HttpServlet {
     private final PetitionDao petitionDao = new PetitionDao();
     private final UserDao userDao = new UserDao();
+    private final SignatureServlet signatureServlet = new SignatureServlet();
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        String[] pathParts = pathInfo.split("/");
+        if (pathParts.length > 2 && "signatures".equals(pathParts[2])) {
+            // Delegate to SignatureServlet
+            signatureServlet.service(req, resp);
+        } else {
+            super.service(req, resp);
+        }
+    }
 
     // GET /petitions/{petitionId}
     @Override

@@ -45,14 +45,6 @@
         <url-pattern>/petitions/*</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>SignatureServlet</servlet-name>
-        <servlet-class>com.tinypet.servlet.SignatureServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SignatureServlet</servlet-name>
-        <url-pattern>/petitions/*/signatures</url-pattern>
-    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>./petition-form/petition-form.jsp</welcome-file>
     </welcome-file-list>
