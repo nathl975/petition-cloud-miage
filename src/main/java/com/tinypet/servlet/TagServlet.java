@@ -18,8 +18,8 @@ public class TagServlet extends HttpServlet {
     private final TagDao tagDao = new TagDao();
     private final PetitionDao petitionDao = new PetitionDao();
 
-    // /tags/{tagId}/petitions
-    // /tags/
+    // GET /tags/{tagId}/petitions
+    // GET /tags/
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
@@ -34,7 +34,6 @@ public class TagServlet extends HttpServlet {
             String[] splits = pathInfo.split("/");
             if (splits.length == 3 && splits[2].equals("petitions")) {
                 String tagId = splits[1];
-                // Handle request for /tags/{tagId}/petitions
                 List<Petition> petitions = petitionDao.getPetitionsByTag(tagId);
                 resp.getWriter().println(new Gson().toJson(petitions));
             } else {

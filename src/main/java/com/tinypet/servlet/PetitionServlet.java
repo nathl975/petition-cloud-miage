@@ -41,12 +41,10 @@ public class PetitionServlet extends HttpServlet {
         }
         Petition petitionFromReq = new Gson().fromJson(req.getReader(), Petition.class);
 
-        // Set the owner ID to the Google user ID
         petitionFromReq.setOwner(user.getId().toString());
 
         com.googlecode.objectify.Key<Petition> createdPetition = petitionDao.createPetition(petitionFromReq);
 
-        // Return the created petition
         resp.setContentType("application/json");
         resp.getWriter().println(new Gson().toJson(createdPetition));
     }

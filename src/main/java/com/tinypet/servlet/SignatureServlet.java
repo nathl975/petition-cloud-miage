@@ -22,6 +22,7 @@ public class SignatureServlet extends HttpServlet {
     private final SignatureDao signatureDao = new SignatureDao();
     private final UserDao userDao = new UserDao();
 
+    // GET /petitions/{petitionId}/signatures
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -32,6 +33,8 @@ public class SignatureServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.getWriter().println(new Gson().toJson(signatures));
     }
+
+    // POST /petitions/{petitionId}/signatures
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();

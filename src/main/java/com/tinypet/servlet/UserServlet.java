@@ -37,8 +37,8 @@ public class UserServlet extends HttpServlet {
     private final SignatureDao signatureDao = new SignatureDao();
 
 
-    // /users/{userId}
-    // /users/{userId}/signatures
+    // GET /users/{userId}
+    // GET /users/{userId}/signatures
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // Authentification
@@ -79,6 +79,7 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    // POST /users
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = userDao.validateIdToken(req);

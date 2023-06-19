@@ -10,9 +10,9 @@ public class Signature {
     @Id
     Long id;
     @Index
-    String user; // Use user ID as the signer
+    String user;
     @Index
-    Long petition; // Use petition ID as the signed petition
+    Long petition;
     @Index
     Date date;
 
