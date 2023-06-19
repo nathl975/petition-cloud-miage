@@ -18,12 +18,16 @@ function loadButton() {
     document.body.appendChild(script);
 }
 
-// Handle Google Sign-In response
+function handleSignOut() {
+    localStorage.removeItem('userName');
+
+    location.reload();
+}
+
 function handleCredentialResponse(response) {
     var credential = response.credential;
     const responsePayload = jwt_decode(credential);
 
-    // Store the user name in local storage
     localStorage.setItem('userName', responsePayload.name);
 
     // Send a POST request to the backend with user data
@@ -42,11 +46,14 @@ function handleCredentialResponse(response) {
         .catch((error) => {
             console.error('Error:', error);
         });
+    location.reload();
+
 }
 
 var Navbar = {
     view: function() {
         const userName = localStorage.getItem('userName');
+        const userId = localStorage.getItem('userId');
 
         return m("nav.navbar.navbar-expand-lg.navbar-light.bg-light", [
             m('a.navbar-brand', { href: '#' }, 'Pétitions'),
@@ -61,13 +68,14 @@ var Navbar = {
                 m('span.navbar-toggler-icon')
             ]),
             m('div.collapse.navbar-collapse.justify-content-end', { id: 'loadButton' }, [
-                userName ? m('div', 'Bonjour, ' + userName) : m('div', { id: 'google-signin-button' })
+                userName ? m('div', 'Bonjour, ' + userName, [
+                    m('button.btn.btn-outline-secondary', { onclick: handleSignOut }, 'Déconnexion')
+                ]) : m('div', { id: 'google-signin-button' })
             ]),
         ])
     }
 }
 
-// Load Google Sign-In button and check if user is signed in after the page has loaded
 window.onload = function() {
     loadButton();
 }

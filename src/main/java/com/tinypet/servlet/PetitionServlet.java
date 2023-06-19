@@ -55,8 +55,6 @@ public class PetitionServlet extends HttpServlet {
         }
         Petition petitionFromReq = new Gson().fromJson(req.getReader(), Petition.class);
 
-        petitionFromReq.setOwner(user.getId().toString());
-
         com.googlecode.objectify.Key<Petition> createdPetition = petitionDao.createPetition(petitionFromReq);
 
         resp.setContentType("application/json");
