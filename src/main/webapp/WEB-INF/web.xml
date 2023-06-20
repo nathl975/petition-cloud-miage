@@ -57,12 +57,23 @@
 
     <servlet>
         <servlet-name>petitions-create</servlet-name>
-        <jsp-file>/public/petition-form/petition-form.jsp</jsp-file>
+        <jsp-file>/public/petition-form.jsp</jsp-file>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>petitions-create</servlet-name>
         <url-pattern>/petition-create</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>visualisation-petition</servlet-name>
+        <servlet-class>/public/petition-form.jsp</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>visualisation-petition</servlet-name>
+        <url-pattern>/visualisation-petition/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

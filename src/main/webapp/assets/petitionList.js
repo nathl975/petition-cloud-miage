@@ -131,24 +131,33 @@ var PetitionList = {
                         m("div", "Tags: " + petition.tags.map(tagId => Tags.getTagName(tagId)).join(', ')),
                         m("div", "Publié par " + petition.owner + " le " + petition.date),
                         m("div", "Nombre de signatures: " + petition.signatureCount),
-                        m("button", {
-                            disabled: !jwtToken || User.hasSigned(petition.id),
-                            onclick: function() {
-                                m.request({
-                                    method: "POST",
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': 'Bearer ' + jwtToken
-                                    },
-                                    url: "/petitions/" + petition.id + "/signatures",
-                                })
-                                    .then(function(result) {
-                                        // Handle the response
-                                        User.loadSignatures();  // Update the user signatures
+                        m("div", { style: "display: flex" }, [
+                            m("form", { action: "/visualisation-petition/"+petition.id }, [
+                                m("button", {
+                                    type: "submit",
+                                    style:"margin-right:2px",
+                                    class: "btn btn-primary"
+                                }, "Consulter")
+                            ]),
+                            m("button", {
+                                disabled: !jwtToken || User.hasSigned(petition.id),
+                                class:"btn btn-primary",
+                                onclick: function() {
+                                    m.request({
+                                        method: "POST",
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Authorization': 'Bearer ' + jwtToken
+                                        },
+                                        url: "/petitions/" + petition.id + "/signatures",
                                     })
-                            }
-                        }, User.hasSigned(petition.id) ? "Signée" : "Signer")
-
+                                        .then(function(result) {
+                                            // Gérer la réponse
+                                            User.loadSignatures();  // Mettre à jour les signatures de l'utilisateur
+                                        })
+                                }
+                            }, User.hasSigned(petition.id) ? "Signée" : "Signer")
+                        ])
                     ]),
                 ]);
             })

@@ -85,6 +85,7 @@
     }
     var PetitionView = {
         oncreate: function () {
+            console.log("OUI");
             // Vérification de l'ID dans l'URL
             var urlParams = new URLSearchParams(window.location.search);
             var id = urlParams.get('id');
@@ -119,6 +120,7 @@
                             m("div", {style: "display: flex;"}, Tags.list.map(function (tag) {
                                 return m(".badge .badge-secondary", {
                                     class: Petition.isTagSelected(tag.id) ? "badge badge-info" : "", // Ajoute une classe CSS si le tag est sélectionné
+                                    style: "cursor:pointer;margin-right:2px", 
                                     onclick: function () {
                                         Petition.toggleTag(tag.id); // Appelle la fonction toggleTag lors du clic sur un tag
                                     }
