@@ -2,10 +2,14 @@ package com.tinypet.dao;
 
 import com.googlecode.objectify.ObjectifyService;
 import com.tinypet.model.Petition;
+import com.tinypet.model.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PetitionDao {
+    private final UserDao userDao = new UserDao();
+
     public void save(Petition petition) {
         ObjectifyService.ofy().save().entity(petition).now();
     }
@@ -35,5 +39,11 @@ public class PetitionDao {
         return ObjectifyService.ofy().load().type(Petition.class).filter("tags", tagId).list();
     }
 
+    public List<Petition> getSignedPetitionsByUser(String userId) {
+        User user = userDao.getUser(userId);
+        return user.getSignedPetitions().stream()
+                .map(this::load)
+                .collect(Collectors.toList());
+    }
 
 }

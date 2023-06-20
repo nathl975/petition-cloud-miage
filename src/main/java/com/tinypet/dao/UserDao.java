@@ -1,9 +1,5 @@
 package com.tinypet.dao;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.cloud.datastore.*;
 import com.googlecode.objectify.ObjectifyService;
 import com.tinypet.model.Signature;
@@ -11,11 +7,6 @@ import com.tinypet.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 public class UserDao {
@@ -101,5 +92,10 @@ public class UserDao {
     public List<Signature> getSignaturesSortedByDate(String userId) {
         return ObjectifyService.ofy().load().type(Signature.class)
                 .filter("user =", userId).order("-date").list();
+    }
+
+    public void signPetition(User user, Long petitionId) {
+        user.addSignedPetition(petitionId);
+        save(user);
     }
 }

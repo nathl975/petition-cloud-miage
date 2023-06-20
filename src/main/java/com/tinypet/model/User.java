@@ -41,6 +41,10 @@ public class User {
         return signedPetitions;
     }
 
+    public void addSignedPetition(Long petitionId) {
+        this.signedPetitions.add(petitionId);
+    }
+
     public void setSignedPetitions(Set<Long> signedPetitions) {
         this.signedPetitions = signedPetitions;
     }
