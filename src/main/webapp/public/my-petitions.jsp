@@ -47,7 +47,7 @@
                                 }
                             )]),
                     ]),
-                    m("div", m(PetitionList)),
+                    m("div", m(MyPetitionsList)),
                 ]),
             ])
         }

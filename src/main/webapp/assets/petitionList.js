@@ -1,16 +1,3 @@
-var Petitions = {
-    list: [],
-    loadList: function() {
-        return m.request({
-            method: "GET",
-            url: "/petitions/"
-        })
-        .then(function(result) {
-            Petitions.list = result
-            console.log("got:",result)
-        })
-    }
-}
 var Tags = {
     list: [],
     loadList: function() {
@@ -53,19 +40,23 @@ var User = {
         return User.signatures.some(signature => signature.petition === petitionId);
     },
 }
+
 var PetitionList = {
+    list: [],
     tagList: [],
     filterOption: "",
-    filteredList : [],
-    
-    oncreate: function() {
-        Petitions.loadList();
-        PetitionList.filteredList = Petitions.list;
-        Tags.loadList();
-        const jwtToken = localStorage.getItem('jwt');
-        if (jwtToken) {
-            User.loadSignatures();
-        }
+    filteredList: [],
+
+    loadList: function(url, headers = {}) {
+        return m.request({
+            method: "GET",
+            headers: headers,
+            url: url
+        })
+            .then(function (result) {
+                PetitionList.list = result
+                console.log("got:", result)
+            })
     },
     toggleTag: function(tagId) {
         var index = PetitionList.tagList.indexOf(tagId);
@@ -105,7 +96,7 @@ var PetitionList = {
                 })),
 
 
-            Petitions.list.sort(function(a, b) {
+            PetitionList.list.sort(function(a, b) {
                 if (PetitionList.filterOption === "mostSigned") {
                     return b.signatureCount - a.signatureCount;
                 } else if (PetitionList.filterOption === "mostRecent") {
@@ -164,3 +155,34 @@ var PetitionList = {
         ]);
     }
 }
+var MyPetitionsList = {
+    oncreate: function() {
+        const jwtToken = localStorage.getItem('jwt');
+        if (jwtToken) {
+            PetitionList.loadList("/petitions/user", {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + jwtToken
+            });
+            Tags.loadList();
+            User.loadSignatures();
+        }
+    },
+    view: function() {
+        return PetitionList.view();
+    }
+}
+
+var HomePageList = {
+    oncreate: function() {
+        PetitionList.loadList("/petitions/");
+        Tags.loadList();
+        const jwtToken = localStorage.getItem('jwt');
+        if (jwtToken) {
+            User.loadSignatures();
+        }
+    },
+    view: function() {
+        return PetitionList.view();
+    }
+}
+

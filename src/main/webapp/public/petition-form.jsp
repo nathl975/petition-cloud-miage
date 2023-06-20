@@ -4,6 +4,7 @@
 <%@ page import="org.example.HelloAppEngine" %>
 <head>
     <title>Nouvelle pétition</title>
+    <link rel="stylesheet" href="petition-form.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -20,7 +21,7 @@
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://unpkg.com/mithril/mithril.js"></script>
-    <script src="../../assets/navbar.js"></script>
+    <script src="../assets/navbar.js"></script>
 </head>
 <body>
 <script>
@@ -34,7 +35,7 @@
 
         },
         save: function () {
-            var jwtToken = localStorage.getItem('jwt'); // Replace 'jwt-token' with the key you use to store the token
+            var jwtToken = localStorage.getItem('jwt');
             fetch('/petitions', {
                 method: 'POST',
                 headers: {
@@ -85,7 +86,6 @@
     }
     var PetitionView = {
         oncreate: function () {
-            console.log("OUI");
             // Vérification de l'ID dans l'URL
             var urlParams = new URLSearchParams(window.location.search);
             var id = urlParams.get('id');
@@ -118,9 +118,8 @@
                         m(".form-group", [
                             m("label", {for: "tags"}, "Tags associés:"),
                             m("div", {style: "display: flex;"}, Tags.list.map(function (tag) {
-                                return m(".badge .badge-secondary", {
-                                    class: Petition.isTagSelected(tag.id) ? "badge badge-info" : "", // Ajoute une classe CSS si le tag est sélectionné
-                                    style: "cursor:pointer;margin-right:2px", 
+                                return m(".badgeTag", {
+                                    class: Petition.isTagSelected(tag.id) ? "selected" : "", // Ajoute une classe CSS si le tag est sélectionné
                                     onclick: function () {
                                         Petition.toggleTag(tag.id); // Appelle la fonction toggleTag lors du clic sur un tag
                                     }

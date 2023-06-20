@@ -35,7 +35,7 @@
                 m(Navbar),
                 m('div.content', {style: 'margin: 10px;'}, [
                     m("h2", "Liste des pétitions"),
-                    m("div", m(PetitionList)),
+                    m("div", m(HomePageList)),
                 ])
             ])
         }
