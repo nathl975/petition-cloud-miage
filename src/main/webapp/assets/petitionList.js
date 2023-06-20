@@ -56,9 +56,11 @@ var User = {
 var PetitionList = {
     tagList: [],
     filterOption: "",
+    filteredList : [],
     
     oncreate: function() {
         Petitions.loadList();
+        PetitionList.filteredList = Petitions.list;
         Tags.loadList();
         const jwtToken = localStorage.getItem('jwt');
         if (jwtToken) {
@@ -84,40 +86,48 @@ var PetitionList = {
     view: function() {
         const jwtToken = localStorage.getItem('jwt');
         return m(".container", [
-            m("div", {style:"display:flex;height : 20px"},[
+            m("div", {style:"display:flex;height : 25px"},[
                 m("select", { onchange: PetitionList.handleFilterChange },  [
                     m("option", { value: "" }, "Tous"),
                     m("option", { value: "mostSigned" }, "Les plus signées"),
                     m("option", { value: "mostRecent" }, "Les plus récentes"),
                     m("option", { value: "mySigned" }, "Mes pétitions signées")
                 ]),
-                m(".form-group", [
-                    m("label", { for: "tags" }, "Tags :"),
-                    m("div", { style: "display: flex;" }, Tags.list.map(function(tag) {
-                        return m(".badgeTag", {
-                            class: PetitionList.isTagSelected(tag.id) ? "selected" : "", // Ajoute une classe CSS si le tag est sélectionné
-                            onclick: function() {
-                                PetitionList.toggleTag(tag.id); // Appelle la fonction toggleTag lors du clic sur un tag
-                            }
-                        }, tag.tagName);
-                    }))
-                ]),
             ]),
+                m("div", {style: "display: flex;margin-top : 5px"}, Tags.list.map(function (tag) {
+                    return m(".badge .badge-secondary", {
+                        class: PetitionList.isTagSelected(tag.id) ? "badge badge-info" : "", // Ajoute une classe CSS si le tag est sélectionné
+                        style: "cursor:pointer;margin-right:2px",
+                        onclick: function () {
+                            PetitionList.toggleTag(tag.id); // Appelle la fonction toggleTag lors du clic sur un tag
+                        }
+                    }, tag.tagName);
+                })),
 
-            Petitions.list.filter(function(petition) { // Remplacer testPetitions par Petitions.list
+
+            Petitions.list.sort(function(a, b) {
                 if (PetitionList.filterOption === "mostSigned") {
-                    return petition.nbSignatures > 0;
+                    return b.signatureCount - a.signatureCount;
                 } else if (PetitionList.filterOption === "mostRecent") {
-                    return new Date(petition.date) > new Date();
-                } else if (PetitionList.filterOption === "mySigned") {
-                    return false;
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    return dateB - dateA;
                 }
                 return true;
-            }).map(function(petition) {
+            })
+            .filter(function(petition) { 
+                if (PetitionList.filterOption === "mySigned" && PetitionList.tagList.length > 0) {
+                    return User.hasSigned(petition.id) && petition.Tags.find(t=> PetitionList.tagList.findIndex(t));
+                }
+                else if(PetitionList.tagList.length > 0)
+                    return !petition.Tags || petition.Tags.find(t=> PetitionList.tagList.findIndex(t));
+                return true;
+            }) 
+            .map(function(petition) {
                 return m(".petition.card", { style: "margin-top: 10px" }, [
-                    m("h3.card-title", { style: "font-weight: bold; padding: 10px;" }, petition.description),
-                    m("p.card-body", petition.body),
-                    m(".container", { style: "display: flex; justify-content: space-between; margin-bottom: 5px" }, [
+                    m("h3", { style: "font-weight: bold; margin: 5px;" }, petition.description),
+                    m("div" ,{style:"margin:5px;max-height:100px;word-break:breakword"},petition.body),
+                    m("div", { style: "display: flex; justify-content: space-between; margin: 0px 0px 2px 5px;font-size:10px",class:"card-subtitle text-muted" }, [
                         m("div", "Tags: " + petition.tags.map(tagId => Tags.getTagName(tagId)).join(', ')),
                         m("div", "Publié par " + petition.owner + " le " + petition.date),
                         m("div", "Nombre de signatures: " + petition.signatureCount),
