@@ -18,6 +18,7 @@ public class SignatureDao {
 
     private ExecutorService executor = Executors.newFixedThreadPool(10);
     private final UserDao userDao = new UserDao();
+    private final PetitionDao petitionDao = new PetitionDao();
 
 
 
@@ -72,7 +73,11 @@ public class SignatureDao {
         Query<Signature> q = ObjectifyService.ofy().load().type(Signature.class).filter("petition", petitionId);
         return q.list();
     }
-
-
+    public List<Petition> getSignedPetitionsByUser(String userId) {
+        User user = userDao.getUser(userId);
+        return user.getSignedPetitions().stream()
+                .map(petitionDao::getPetition)
+                .collect(Collectors.toList());
+    }
 
 }

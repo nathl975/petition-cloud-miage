@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PetitionDao {
-    private final PetitionDao petitionDao = new PetitionDao();
     private final UserDao userDao = new UserDao();
-
 
     public void save(Petition petition) {
         ObjectifyService.ofy().save().entity(petition).now();
@@ -40,12 +38,5 @@ public class PetitionDao {
     public List<Petition> getPetitionsByTag(String tagId) {
         return ObjectifyService.ofy().load().type(Petition.class).filter("tags", tagId).list();
     }
-
-    public List<Petition> getSignedPetitionsByUser(String userId) {
-        User user = userDao.getUser(userId);
-        return user.getSignedPetitions().stream()
-                .map(petitionDao::getPetition)
-                .collect(Collectors.toList());
-    }
-
+    
 }
