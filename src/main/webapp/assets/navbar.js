@@ -58,14 +58,13 @@ function loadButton() {
     script.async = true;
     script.defer = true;
     script.onload = function() {
-        // Initialize Google One Tap after the library has loaded
         google.accounts.id.initialize({
             client_id: "347549281772-ud7a93hp8e5s72iaktcop31186o62m76.apps.googleusercontent.com",
             callback: handleCredentialResponse
         });
         google.accounts.id.renderButton(
             document.getElementById("google-signin-button"),
-            { theme: "outline", size: "large" }  // customize the button
+            { theme: "outline", size: "large" }
         );
     };
     document.body.appendChild(script);
@@ -76,7 +75,6 @@ function handleCredentialResponse(response) {
     var credential = response.credential;
     const responsePayload = jwt_decode(credential);
 
-    // Send a POST request to the backend with user data
     fetch('/users', {
         method: 'POST',
         headers: {
@@ -92,12 +90,16 @@ function handleCredentialResponse(response) {
             // Update JWT and user info
             localStorage.setItem('jwt', data.jwt);
             localStorage.setItem('userName', data.user.name);
+
+            // Reload page
+            window.location.reload();
         })
         .catch((error) => {
             console.error('Error:', error);
         });
-
 }
+
+
 
 function handleSignOut() {
     localStorage.removeItem('jwt');
@@ -124,8 +126,11 @@ var Navbar = {
             ]),
             m('div.collapse.navbar-collapse', {id: 'navbarSupportedContent'}, [
                 m('ul.navbar-nav.mr-auto', [
-                    jwtToken ? m('li.nav-item', [ // Si un jeton JWT existe, afficher le lien "Mes pétitions"
-                        m('a.navbar-brand', { href: '/my-petitions' }, 'Mes pétitions'),
+                    jwtToken ? m('li.nav-item', [ // Si un jeton JWT existe, afficher le lien "Mes pétitions signées"
+                        m('a.navbar-brand', { href: '/my-petitions' }, 'Mes pétitions signées'),
+                    ]) : null, // Si aucun jeton JWT n'existe, ne pas afficher le lien
+                    jwtToken ? m('li.nav-item', [ // Si un jeton JWT existe, afficher le lien "Créer une pétition"
+                        m('a.navbar-brand', { href: '/petition-create' }, 'Créer une pétition'),
                     ]) : null // Si aucun jeton JWT n'existe, ne pas afficher le lien
                 ]),
                 m('div.collapse.navbar-collapse.justify-content-end', { id: 'loadButton' }, [
@@ -142,10 +147,6 @@ var Navbar = {
     }
 }
 
-
-window.onload = function() {
-    loadButton();
-}
 
 window.onload = function() {
     loadButton();

@@ -25,7 +25,7 @@
     <script src="../assets/petitionList.js"></script>
 
 
-    <title>Mes pétitions</title>
+    <title>Mes pétitions signées</title>
 </head>
 <body>
 
@@ -38,14 +38,6 @@
                 m('div.content', {style: 'margin: 10px;'}, [
                     m('div', {style: 'display:flex; justify-content: space-between;'}, [
                         m("h2", "Mes pétitions"),
-                        m('form', {action: '/petition-create'}, [
-                            m('input.btn.btn-success',
-                                {
-                                    type: 'submit',
-                                    value: 'Créer une pétition',
-                                    disabled: !jwtToken
-                                }
-                            )]),
                     ]),
                     m("div", m(MyPetitionsList)),
                 ]),
@@ -54,5 +46,6 @@
     }
     m.mount(document.body, MyPetitions)
 </script>
+
 </body>
 </html>

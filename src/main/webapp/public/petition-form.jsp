@@ -54,6 +54,10 @@
                         throw new Error('Not authenticated');
                     }
                 })
+                .then(() => {
+                    // Redirige vers la page d'accueil si succès
+                    window.location.href = "/";
+                })
                 .catch((error) => {
                     console.error('Error:', error);
                 });

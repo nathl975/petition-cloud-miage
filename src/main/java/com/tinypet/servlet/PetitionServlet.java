@@ -34,7 +34,6 @@ public class PetitionServlet extends HttpServlet {
         }
         String[] pathParts = pathInfo.split("/");
         if (pathParts.length > 2 && "signatures".equals(pathParts[2])) {
-            // Delegate to SignatureServlet
             signatureServlet.service(req, resp);
         } else {
             super.service(req, resp);
@@ -74,7 +73,7 @@ public class PetitionServlet extends HttpServlet {
             resp.getWriter().println(new Gson().toJson(userSignedPetitions));
         } else {
             // GET /petitions/{petitionId}
-            Long id = Long.parseLong(pathInfo.substring(1)); // Excludes the initial "/"
+            Long id = Long.parseLong(pathInfo.substring(1));
             Petition petition = petitionDao.getPetition(id);
             resp.setContentType("application/json");
             resp.getWriter().println(new Gson().toJson(petition));
