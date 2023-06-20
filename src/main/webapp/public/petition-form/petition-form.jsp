@@ -35,7 +35,7 @@
 
         },
         save: function () {
-            var jwtToken = localStorage.getItem('jwt'); // Replace 'jwt-token' with the key you use to store the token
+            var jwtToken = localStorage.getItem('jwt');
             fetch('/petitions', {
                 method: 'POST',
                 headers: {

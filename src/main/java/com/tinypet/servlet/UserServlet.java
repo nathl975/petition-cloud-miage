@@ -2,12 +2,8 @@ package com.tinypet.servlet;
 
 import com.tinypet.dao.SignatureDao;
 import com.tinypet.dao.UserDao;
-import com.tinypet.model.Petition;
 import com.tinypet.model.Signature;
 import com.tinypet.model.User;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

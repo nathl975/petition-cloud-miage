@@ -96,5 +96,6 @@ public class UserDao {
 
     public void signPetition(User user, Long petitionId) {
         user.addSignedPetition(petitionId);
+        save(user);
     }
 }

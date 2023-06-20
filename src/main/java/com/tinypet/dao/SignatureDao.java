@@ -5,16 +5,23 @@ import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 import com.tinypet.model.Petition;
 import com.tinypet.model.Signature;
+import com.tinypet.model.User;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class SignatureDao {
 
     private ExecutorService executor = Executors.newFixedThreadPool(10);
+    private final UserDao userDao = new UserDao();
+    private final PetitionDao petitionDao = new PetitionDao();
+
+
+
 
     public void save(Signature signature) {
         ObjectifyService.ofy().save().entity(signature).now();
@@ -43,11 +50,15 @@ public class SignatureDao {
         executor.execute(() -> {
             try (Closeable closeable = ObjectifyService.begin()) {
                 incrementPetitionSignatureCount(signature.getPetition());
+                userDao.signPetition(userDao.getUser(signature.getUser()), signature.getPetition());
             } catch (IOException e) {
                 e.printStackTrace();
-            }        });
+            }
+        });
+
         return key;
     }
+
 
     private void incrementPetitionSignatureCount(Long petitionId) {
         Petition petition = ObjectifyService.ofy().load().type(Petition.class).id(petitionId).now();
@@ -63,4 +74,12 @@ public class SignatureDao {
         Query<Signature> q = ObjectifyService.ofy().load().type(Signature.class).filter("petition", petitionId);
         return q.list();
     }
+
+    public List<Petition> getSignedPetitionsByUser(String userId) {
+        User user = userDao.getUser(userId);
+        return user.getSignedPetitions().stream()
+                .map(petitionDao::getPetition)
+                .collect(Collectors.toList());
+    }
+
 }
