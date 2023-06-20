@@ -15,7 +15,6 @@ public class Signature {
     Long petition;
     @Index
     Date date;
-
     protected Signature() {}
     public Signature(Long id, String user, Long petition) {
         this.id = id;

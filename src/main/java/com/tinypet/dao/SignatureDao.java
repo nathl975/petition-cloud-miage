@@ -3,11 +3,17 @@ package com.tinypet.dao;
 import com.google.cloud.datastore.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
+import com.tinypet.model.Petition;
 import com.tinypet.model.Signature;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SignatureDao {
+
+    private ExecutorService executor = Executors.newFixedThreadPool(10);
+
     public void save(Signature signature) {
         ObjectifyService.ofy().save().entity(signature).now();
     }
@@ -26,13 +32,22 @@ public class SignatureDao {
                 .filter("petition", signature.getPetition())
                 .first().now();
 
-        // If the user has already signed the petition, return the existing signature
         if (existingSignature != null) {
             return null;
         }
 
-        // If the user hasn't signed the petition yet, save the new signature
-        return ObjectifyService.ofy().save().entity(signature).now();    }
+        com.googlecode.objectify.Key<Signature> key = ObjectifyService.ofy().save().entity(signature).now();
+
+        executor.execute(() -> incrementPetitionSignatureCount(signature.getPetition()));
+
+        return key;
+    }
+
+    private void incrementPetitionSignatureCount(Long petitionId) {
+        Petition petition = ObjectifyService.ofy().load().type(Petition.class).id(petitionId).now();
+        petition.setSignatureCount(petition.getSignatureCount() + 1);
+        ObjectifyService.ofy().save().entity(petition).now();
+    }
 
     public List<Signature> getSignaturesByUser(String userId) {
         return ObjectifyService.ofy().load().type(Signature.class).filter("user", userId).list();

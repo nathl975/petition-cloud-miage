@@ -19,6 +19,7 @@ public class Petition {
     String body;
     String description;
     Set<Long> tags = new HashSet<>();
+    Integer signatureCount;
 
     protected Petition() {}
     public Petition(Long id, String owner, String body, String description, Set<Long> tags) {
@@ -27,6 +28,15 @@ public class Petition {
         this.body = body;
         this.description = description;
         this.tags = tags;
+        this.signatureCount = 0;
+    }
+
+    public int getSignatureCount() {
+        return signatureCount;
+    }
+
+    public void setSignatureCount(int signatureCount) {
+        this.signatureCount = signatureCount;
     }
 
     public Long getId() {
