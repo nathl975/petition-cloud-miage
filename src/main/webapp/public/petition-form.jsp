@@ -4,7 +4,6 @@
 <%@ page import="org.example.HelloAppEngine" %>
 <head>
     <title>Nouvelle pétition</title>
-    <link rel="stylesheet" href="petition-form.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -118,8 +117,8 @@
                         m(".form-group", [
                             m("label", {for: "tags"}, "Tags associés:"),
                             m("div", {style: "display: flex;"}, Tags.list.map(function (tag) {
-                                return m(".badgeTag", {
-                                    class: Petition.isTagSelected(tag.id) ? "selected" : "", // Ajoute une classe CSS si le tag est sélectionné
+                                return m(".badge .badge-secondary", {
+                                    class: Petition.isTagSelected(tag.id) ? "badge badge-info" : "", // Ajoute une classe CSS si le tag est sélectionné
                                     onclick: function () {
                                         Petition.toggleTag(tag.id); // Appelle la fonction toggleTag lors du clic sur un tag
                                     }
