@@ -40,10 +40,18 @@ public class SignatureServlet extends HttpServlet {
         Long petitionId = Long.parseLong(pathInfo.substring(1));
 
         // Authentification
-        String credential = new Gson().fromJson(req.getReader(), String.class);
-        User user = userDao.validateCredential(credential);
+        String authHeader = req.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
+            return;
+        }
+
+        String token = authHeader.substring(7);
+        User user = userDao.validateCredential(token);
+
         if (user == null) {
-            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid ID token.");
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You need to be logged in to sign a petition");
             return;
         }
 

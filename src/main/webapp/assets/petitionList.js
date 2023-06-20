@@ -22,6 +22,10 @@ var Tags = {
             Tags.list = result
             console.log("got:",result)
         })
+    },
+    getTagName: function(tagId) {
+        var tag = Tags.list.find(tag => tag.id === tagId);
+        return tag ? tag.name : null;
     }
 }
 var testPetitions = [
@@ -114,6 +118,7 @@ var PetitionList = {
                     m("h3.card-title", { style: "font-weight: bold; padding: 10px;" }, petition.description),
                     m("p.card-body", petition.body),
                     m(".container", { style: "display: flex; justify-content: space-between; margin-bottom: 5px" }, [
+                        m("div", "Tags: " + petition.tags.map(tagId => Tags.getTagName(tagId)).join(', ')),
                         m("div", "Publié par " + petition.owner + " le " + petition.date),
                         m("div", "Nombre de signatures: " + 0),
                     ]),
