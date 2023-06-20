@@ -28,43 +28,27 @@ Pour gérer les signatures de manière performante et scalable, nous avons mis e
 * [Maven](https://maven.apache.org/download.cgi) (at least 3.5)
 * [Google Cloud SDK](https://cloud.google.com/sdk/) (aka gcloud)
 
-## Setup
+## Entités
+Pour représenter nos données, nous avons utilisé 4 entités dans le datastore : 
+* les pétitions
+* Les signatures
+* Les utilisateurs
+* Les tags
 
-    gcloud init
-    gcloud auth application-default login
+Voici le schéma des entités stockés dans le datastore GCP :
 
-## Maven
-### Running locally
+Les pétitions :
 
-    mvn appengine:run
+![entite petition](img/petition.png)
 
-### Deploying
+Les utilisateurs :                               
+                                              
+![entite user](img/user.png)
 
-    mvn appengine:deploy
+Les signatures :                        
+                                          
+![entite signature](img/signature.png)   
 
-## Testing
-
-    mvn verify
-
-As you add / modify the source code (`src/main/java/...`) it's very useful to add
-[unit testing](https://cloud.google.com/appengine/docs/java/tools/localunittesting)
-to (`src/main/test/...`).  The following resources are quite useful:
-
-* [Junit4](http://junit.org/junit4/)
-* [Mockito](http://mockito.org/)
-* [Truth](http://google.github.io/truth/)
-
-## Updating to latest Artifacts
-
-An easy way to keep your projects up to date is to use the maven [Versions plugin][versions-plugin].
-
-    mvn versions:display-plugin-updates
-    mvn versions:display-dependency-updates
-    mvn versions:use-latest-versions
-
-Note - Be careful when changing `javax.servlet` as App Engine Standard uses 3.1 for Java 8, and 2.5
-for Java 7.
-
-Our usual process is to test, update the versions, then test again before committing back.
-
-[plugin]: http://www.mojohaus.org/versions-maven-plugin/
+Les tags :                        
+                                          
+![entite tag](img/tag.png)      
