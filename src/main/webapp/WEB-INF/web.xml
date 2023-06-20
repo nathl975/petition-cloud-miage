@@ -65,17 +65,6 @@
         <url-pattern>/petition-create</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>visualisation-petition</servlet-name>
-        <servlet-class>/public/petition-form.jsp</servlet-class>
-    </servlet>
-
-
-    <servlet-mapping>
-        <servlet-name>visualisation-petition</servlet-name>
-        <url-pattern>/visualisation-petition/*</url-pattern>
-    </servlet-mapping>
-
     <welcome-file-list>
         <welcome-file>public/index.jsp</welcome-file>
     </welcome-file-list>
