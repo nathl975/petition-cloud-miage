@@ -55,6 +55,7 @@ public class UserServlet extends HttpServlet {
         User user = userDao.validateCredential(token);
 
         if (user == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You need to be logged in to create a petition");
             return;
         }
@@ -68,6 +69,7 @@ public class UserServlet extends HttpServlet {
             } else if (pathInfo.equals("/signatures")) {
                 handleUserSignaturesRequest(user.getId(), resp);
             } else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL format.");
             }
 

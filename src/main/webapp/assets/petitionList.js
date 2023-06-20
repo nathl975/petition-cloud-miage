@@ -23,41 +23,36 @@ var Tags = {
             console.log("got:",result)
         })
     },
+
     getTagName: function(tagId) {
         var tag = Tags.list.find(tag => tag.id === tagId);
         return tag ? tag.name : null;
     }
 }
-var testPetitions = [
-    {
-        id: 1,
-        owner: "John Doe",
-        body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        description: "Petition Test",
-        tags: [1, 2],
-        date: "2023-06-19",
-        nbSignatures: 10
+var User = {
+    signatures: [],
+    loadSignatures: function() {
+        const jwtToken = localStorage.getItem('jwt');
+        if (jwtToken) {
+            return m.request({
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + jwtToken
+                },
+                url: "/users/signatures",
+            })
+                .then(function(result) {
+                    User.signatures = result;
+                });
+        } else {
+            User.signatures = [];
+        }
     },
-    {
-        id: 2,
-        owner: "Jane Smith",
-        body: "Praesent et dignissim lorem. Vestibulum finibus lectus eu lacinia euismod.",
-        description: "Petition 2",
-        tags: [2,3],
-        date: "2023-06-20",
-        nbSignatures: 5
+    hasSigned: function(petitionId) {
+        return User.signatures.some(signature => signature.petition === petitionId);
     },
-    {
-        id: 3,
-        owner: "Michael Johnson",
-        body: "Nulla ultrices nibh ut diam consectetur, nec efficitur sem consequat.",
-        description: "Petition 3",
-        tags: [1,3],
-        date: "2023-06-21",
-        nbSignatures: 15
-    }
-];
-
+}
 var PetitionList = {
     tagList: [],
     filterOption: "",
@@ -65,6 +60,10 @@ var PetitionList = {
     oncreate: function() {
         Petitions.loadList();
         Tags.loadList();
+        const jwtToken = localStorage.getItem('jwt');
+        if (jwtToken) {
+            User.loadSignatures();
+        }
     },
     toggleTag: function(tagId) {
         var index = PetitionList.tagList.indexOf(tagId);
@@ -83,6 +82,7 @@ var PetitionList = {
     },
     
     view: function() {
+        const jwtToken = localStorage.getItem('jwt');
         return m(".container", [
             m("div", {style:"display:flex;height : 20px"},[
                 m("select", { onchange: PetitionList.handleFilterChange },  [
@@ -120,7 +120,25 @@ var PetitionList = {
                     m(".container", { style: "display: flex; justify-content: space-between; margin-bottom: 5px" }, [
                         m("div", "Tags: " + petition.tags.map(tagId => Tags.getTagName(tagId)).join(', ')),
                         m("div", "Publié par " + petition.owner + " le " + petition.date),
-                        m("div", "Nombre de signatures: " + 0),
+                        m("div", "Nombre de signatures: " + petition.signatureCount),
+                        m("button", {
+                            disabled: !jwtToken || User.hasSigned(petition.id),
+                            onclick: function() {
+                                m.request({
+                                    method: "POST",
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': 'Bearer ' + jwtToken
+                                    },
+                                    url: "/petitions/" + petition.id + "/signatures",
+                                })
+                                    .then(function(result) {
+                                        // Handle the response
+                                        User.loadSignatures();  // Update the user signatures
+                                    })
+                            }
+                        }, User.hasSigned(petition.id) ? "Signée" : "Signer")
+
                     ]),
                 ]);
             })

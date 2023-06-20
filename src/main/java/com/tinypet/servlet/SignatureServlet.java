@@ -37,7 +37,8 @@ public class SignatureServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
-        Long petitionId = Long.parseLong(pathInfo.substring(1));
+        String[] pathSegments = pathInfo.split("/");
+        Long petitionId = Long.parseLong(pathSegments[1]);
 
         // Authentification
         String authHeader = req.getHeader("Authorization");

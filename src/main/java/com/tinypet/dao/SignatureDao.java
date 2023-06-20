@@ -6,6 +6,8 @@ import com.googlecode.objectify.cmd.Query;
 import com.tinypet.model.Petition;
 import com.tinypet.model.Signature;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,8 +40,12 @@ public class SignatureDao {
 
         com.googlecode.objectify.Key<Signature> key = ObjectifyService.ofy().save().entity(signature).now();
 
-        executor.execute(() -> incrementPetitionSignatureCount(signature.getPetition()));
-
+        executor.execute(() -> {
+            try (Closeable closeable = ObjectifyService.begin()) {
+                incrementPetitionSignatureCount(signature.getPetition());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }        });
         return key;
     }
 

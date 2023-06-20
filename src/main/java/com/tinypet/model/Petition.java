@@ -28,7 +28,6 @@ public class Petition {
         this.body = body;
         this.description = description;
         this.tags = tags;
-        this.signatureCount = 0;
     }
 
     public int getSignatureCount() {

@@ -80,6 +80,7 @@ public class PetitionServlet extends HttpServlet {
 
         petitionFromReq.setOwner(user.getId());
         petitionFromReq.setDate(new Date());
+        petitionFromReq.setSignatureCount(0);
 
         com.googlecode.objectify.Key<Petition> createdPetition = petitionDao.createPetition(petitionFromReq);
 
