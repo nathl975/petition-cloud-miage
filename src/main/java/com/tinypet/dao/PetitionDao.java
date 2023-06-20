@@ -38,5 +38,12 @@ public class PetitionDao {
     public List<Petition> getPetitionsByTag(String tagId) {
         return ObjectifyService.ofy().load().type(Petition.class).filter("tags", tagId).list();
     }
-    
+
+    public List<Petition> getSignedPetitionsByUser(String userId) {
+        User user = userDao.getUser(userId);
+        return user.getSignedPetitions().stream()
+                .map(this::load)
+                .collect(Collectors.toList());
+    }
+
 }
