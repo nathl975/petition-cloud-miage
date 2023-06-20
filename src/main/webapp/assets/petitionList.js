@@ -80,7 +80,6 @@ var PetitionList = {
     
     view: function() {
         return m(".container", [
-            m("h2", "Liste des pétitions"),
             m("div", {style:"display:flex;height : 20px"},[
                 m("select", { onchange: PetitionList.handleFilterChange },  [
                     m("option", { value: "" }, "Tous"),
