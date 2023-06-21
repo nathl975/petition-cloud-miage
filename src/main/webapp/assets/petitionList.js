@@ -106,15 +106,21 @@ var PetitionList = {
                 }
                 return true;
             })
-            .filter(function(petition) { 
-                if (PetitionList.filterOption === "mySigned" && PetitionList.tagList.length > 0) {
-                    return User.hasSigned(petition.id) && petition.Tags.find(t=> PetitionList.tagList.findIndex(t));
-                }
-                else if(PetitionList.tagList.length > 0)
-                    return !petition.Tags || petition.Tags.find(t=> PetitionList.tagList.findIndex(t));
-                return true;
-            }) 
-            .map(function(petition) {
+                .filter(function(petition) {
+                    if (PetitionList.tagList.length === 0) {
+                        return true;
+                    }
+
+                    var numTagList = PetitionList.tagList.map(Number);
+
+                    if (PetitionList.filterOption === "mySigned") {
+                        return User.hasSigned(petition.id) && numTagList.some(tagId => petition.tags.includes(tagId));
+                    } else {
+                        return numTagList.some(tagId => petition.tags.includes(tagId));
+                    }
+                })
+
+                .map(function(petition) {
                 return m(".petition.card", { style: "margin-top: 10px" }, [
                     m("h3", { style: "font-weight: bold; margin: 5px;" }, petition.description),
                     m("div" ,{style:"margin:5px;max-height:100px;word-break:breakword"},petition.body),
