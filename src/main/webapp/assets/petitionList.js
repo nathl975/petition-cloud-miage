@@ -12,8 +12,7 @@ var Tags = {
     },
 
     getTagName: function(tagId) {
-        var tag = Tags.list.find(tag => tag.id === tagId);
-        return tag ? tag.name : null;
+        return Tags.list.find(f=> f.id == tagId).tagName;
     }
 }
 var User = {
@@ -125,7 +124,11 @@ var PetitionList = {
                     m("h3", { style: "font-weight: bold; margin: 5px;" }, petition.description),
                     m("div" ,{style:"margin:5px;max-height:100px;word-break:breakword"},petition.body),
                     m("div", { style: "display: flex; justify-content: space-between; margin: 0px 0px 2px 5px;font-size:10px",class:"card-subtitle text-muted" }, [
-                        m("div", "Tags: " + petition.tags.map(tagId => Tags.getTagName(tagId)).join(', ')),
+                        m("div", petition.tags.map(function (tag) {
+                            return m(".badge .badge-info", {
+                                style: "margin-right:2px",
+                            }, Tags.getTagName(tag));
+                        })),,
                         m("div", "Publié par " + petition.owner + " le " + petition.date),
                         m("div", "Nombre de signatures: " + petition.signatureCount),
                         m("div", { style: "display: flex" }, [
